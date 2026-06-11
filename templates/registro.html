@@ -1,126 +1,116 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-    .workspace-wrapper {
+    .workspace-container {
         max-width: 1200px;
-        margin: 50px auto 100px auto;
-        padding: 0 25px;
-        /* Animación en cascada para todo el espacio de trabajo */
-        opacity: 0;
-        animation: workspaceBlurIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-        animation-delay: 0.2s;
+        margin: 40px auto 80px auto;
+        padding: 0 24px;
     }
 
-    .head-block {
-        text-align: center;
-        margin-bottom: 60px;
+    .section-header {
+        margin-bottom: 40px;
     }
 
-    .head-block h2 {
-        font-family: 'Cinzel', serif;
-        font-size: 2.4rem;
-        letter-spacing: 6px;
-        margin-bottom: 12px;
-        color: var(--text-titanium);
+    .section-header h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.5px;
     }
 
-    .head-block p {
-        color: var(--text-muted);
+    .section-header p {
+        color: var(--text-silver);
         font-size: 0.85rem;
-        letter-spacing: 2px;
-        text-transform: uppercase;
+        margin-top: 5px;
     }
 
-    /* Contenedor del Formulario */
-    .glass-card-form {
-        background: var(--bg-obsidian);
-        border: 1px solid var(--border-line);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        padding: 50px;
-        margin-bottom: 70px;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    /* Tarjetas Holográficas de Vidrio */
+    .cyber-card {
+        background: var(--bg-card);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 40px;
+        border-radius: 8px;
+        margin-bottom: 50px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        transition: border-color 0.4s ease;
     }
 
-    .fields-layout {
+    .cyber-card:focus-within {
+        border-color: var(--glass-border-active);
+    }
+
+    .form-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 35px;
+        gap: 30px;
     }
 
-    .span-full {
+    .full-width {
         grid-column: span 2;
     }
 
-    .custom-input-group {
+    .input-box {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
     }
 
-    .custom-input-group label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        color: var(--text-bronze);
-        font-weight: 500;
-    }
-
-    .custom-input-group input {
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid var(--border-line);
-        padding: 16px;
-        color: var(--text-titanium);
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.85rem;
-        letter-spacing: 1px;
-        transition: all 0.4s ease;
-    }
-
-    .custom-input-group input:focus {
-        border-color: var(--text-bronze);
-        background: rgba(15, 15, 15, 0.8);
-        outline: none;
-        box-shadow: 0 0 15px rgba(187, 161, 115, 0.05);
-    }
-
-    .action-block {
-        margin-top: 45px;
-        text-align: right;
-    }
-
-    .submit-luxury-btn {
-        background: transparent;
-        color: var(--text-titanium);
-        border: 1px solid var(--text-titanium);
-        padding: 16px 50px;
+    .input-box label {
         font-size: 0.75rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 1.5px;
+        color: var(--neon-cyan);
+    }
+
+    .input-box input {
+        background: rgba(11, 15, 25, 0.6);
+        border: 1px solid var(--glass-border);
+        padding: 14px 18px;
+        color: var(--text-pure);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .input-box input:focus {
+        border-color: var(--neon-cyan);
+        background: rgba(11, 15, 25, 0.9);
+        outline: none;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+    }
+
+    .form-actions {
+        margin-top: 35px;
+        text-align: right;
+    }
+
+    .btn-submit-tech {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
+        color: var(--bg-deep);
+        border: none;
+        padding: 16px 45px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 4px;
         cursor: pointer;
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .submit-luxury-btn:hover {
-        background: var(--text-titanium);
-        color: var(--bg-pure);
+    .btn-submit-tech:hover {
         transform: scale(1.02);
+        box-shadow: 0 10px 25px rgba(0, 242, 254, 0.25);
     }
 
-    /* Tabla Estilizada */
-    .glass-card-table {
-        background: var(--bg-obsidian);
-        border: 1px solid var(--border-line);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        padding: 50px;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-    }
-
-    .scroll-table-box {
+    /* Tabla de Consultas */
+    .table-container {
         overflow-x: auto;
-        margin-top: 20px;
     }
 
     table {
@@ -130,94 +120,82 @@
     }
 
     th {
-        font-family: 'Cinzel', serif;
-        font-size: 0.75rem;
-        letter-spacing: 3px;
-        color: var(--text-bronze);
-        padding: 20px;
-        border-bottom: 1px solid var(--border-line-active);
-        background: rgba(5, 5, 5, 0.9);
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--neon-cyan);
+        padding: 18px;
+        border-bottom: 2px solid var(--glass-border);
+        background: rgba(15, 23, 42, 0.4);
     }
 
     td {
-        padding: 20px;
-        font-size: 0.85rem;
-        color: #c9c9ce;
-        border-bottom: 1px solid var(--border-line);
-        font-weight: 300;
-        letter-spacing: 0.5px;
-        transition: background 0.3s ease;
+        padding: 18px;
+        font-size: 0.88rem;
+        color: var(--text-silver);
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        font-weight: 400;
+        transition: all 0.2s ease;
     }
 
     tr:hover td {
-        color: var(--text-titanium);
-        background: rgba(187, 161, 115, 0.02);
-    }
-
-    @keyframes workspaceBlurIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-            filter: blur(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-        }
+        color: var(--text-pure);
+        background: rgba(0, 242, 254, 0.01);
     }
 </style>
 
-<div class="workspace-wrapper">
+<div class="workspace-container">
     
-    <div class="glass-card-form">
-        <div class="head-block">
-            <h2>REGISTRO DE ESTUDIANTES</h2>
-            <p>Módulo de captura y almacenamiento asimétrico</p>
+    <div class="cyber-card">
+        <div class="section-header">
+            <h2>Ingreso de Estudiantes</h2>
+            <p>Módulo de persistencia estructurado para la base de datos distribuida.</p>
         </div>
 
         <form action="/registro" method="POST">
-            <div class="fields-layout">
-                <div class="custom-input-group">
-                    <label>Documento de Identidad</label>
+            <div class="form-grid">
+                <div class="input-box">
+                    <label>Identificación</label>
                     <input type="text" name="documento" required autocomplete="off">
                 </div>
-                <div class="custom-input-group">
-                    <label>Nombre Completo</label>
+                <div class="input-box">
+                    <label>Nombre del Alumno</label>
                     <input type="text" name="nombre" required autocomplete="off">
                 </div>
-                <div class="custom-input-group">
-                    <label>Correo Electrónico</label>
+                <div class="input-box">
+                    <label>Correo Institucional</label>
                     <input type="email" name="correo" required autocomplete="off">
                 </div>
-                <div class="custom-input-group">
-                    <label>Programa de Formación</label>
+                <div class="input-box">
+                    <label>Especialidad / Programa</label>
                     <input type="text" name="programa" required autocomplete="off">
                 </div>
-                <div class="custom-input-group span-full">
-                    <label>Número de Ficha</label>
+                <div class="input-box full-width">
+                    <label>Código de Ficha</label>
                     <input type="text" name="ficha" required autocomplete="off">
                 </div>
             </div>
-            <div class="action-block">
-                <button type="submit" id="btn-registrar" class="submit-luxury-btn">Guardar Información</button>
+            <div class="form-actions">
+                <button type="submit" id="btn-registrar" class="btn-submit-tech">Registrar Ficha</button>
             </div>
         </form>
     </div>
 
-    <div class="glass-card-table" id="seccion-consulta">
-        <div class="head-block">
-            <h2>REGISTROS DEL SISTEMA</h2>
-            <p>Consulta embebida sincronizada en tiempo real</p>
+    <div class="cyber-card" id="seccion-consulta">
+        <div class="section-header">
+            <h2>Registros Indexados</h2>
+            <p>Muestra asíncrona de los elementos validados en la base de datos PostgreSQL.</p>
         </div>
 
-        <div class="scroll-table-box">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
                         <th>Identificación</th>
                         <th>Estudiante</th>
-                        <th>Correo Electrónico</th>
+                        <th>Correo</th>
                         <th>Programa</th>
                         <th>Ficha</th>
                     </tr>
@@ -225,7 +203,7 @@
                 <tbody>
                     {% for estudiante in estudiantes %}
                     <tr>
-                        <td>{{ estudiante.documento }}</td>
+                        <td><strong>{{ estudiante.documento }}</strong></td>
                         <td>{{ estudiante.nombre }}</td>
                         <td>{{ estudiante.correo }}</td>
                         <td>{{ estudiante.programa }}</td>
