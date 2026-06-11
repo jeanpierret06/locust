@@ -7,19 +7,27 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 def get_db_connection():
+    # 1. Intentar leer la variable de entorno de Render
     url = os.environ.get('DATABASE_URL')
-    if url and "sslmode=" not in url:
+    
+    # 2. Respaldo explícito con tus credenciales de Render extraídas de DBeaver
+    if not url:
+        url = "postgres://public:sena_t4sc@dpg-d8f3fdurnols73am6030-a.oregon-postgres.render.com:5432/sena_t4sc"
+    
+    # Asegurar el parámetro SSL obligatorio para evitar rechazos de conexión
+    if "sslmode=" not in url:
         if "?" in url:
             url += "&sslmode=require"
         else:
             url += "?sslmode=require"
+            
     return psycopg2.connect(url)
 
 def init_db():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        # Aseguramos que use la tabla 'estudiantes' que ya tienes creada en DBeaver
+        # Forzar la creación de la tabla con la estructura exacta de tu DBeaver
         cur.execute('''
             CREATE TABLE IF NOT EXISTS estudiantes (
                 id SERIAL PRIMARY KEY,
@@ -34,9 +42,9 @@ def init_db():
         conn.commit()
         cur.close()
         conn.close()
-        print("Base de datos verificada e inicializada correctamente.")
+        print("Estructura de Base de Datos verificada con éxito.")
     except Exception as e:
-        print(f"Error en init_db: {str(e)}", file=sys.stderr)
+        print(f"Fallo en init_db: {str(e)}", file=sys.stderr)
 
 @app.route('/')
 def index():
@@ -54,7 +62,7 @@ def registro():
         try:
             conn = get_db_connection()
             cur = conn.cursor()
-            # Inserción apuntando exclusivamente a la tabla 'estudiantes'
+            # Mapeo de variables sanitizadas hacia las columnas reales de la tabla
             cur.execute('''
                 INSERT INTO estudiantes (documento, nombre, correo, programa, ficha)
                 VALUES (%s, %s, %s, %s, %s)
@@ -62,14 +70,13 @@ def registro():
             conn.commit()
             cur.close()
             conn.close()
-        except psycopg2.errors.UniqueViolation:
-            print("Aviso: El documento o correo ya existe en el sistema.", file=sys.stderr)
         except Exception as e:
-            print(f"Error en inserción SQL: {str(e)}", file=sys.stderr)
+            # Captura errores en los logs de Render (como llaves duplicadas) sin tumbar el servidor
+            print(f"Error controlado en inserción SQL: {str(e)}", file=sys.stderr)
             
         return redirect(url_for('registro'))
 
-    # Consulta limpia usando RealDictCursor para alimentar la tabla embebida sin errores
+    # Bloque de lectura para la tabla embebida usando RealDictCursor
     lista_estudiantes = []
     try:
         conn = get_db_connection()
@@ -79,7 +86,7 @@ def registro():
         cur.close()
         conn.close()
     except Exception as e:
-        print(f"Error en consulta SQL: {str(e)}", file=sys.stderr)
+        print(f"Error en consulta de registros: {str(e)}", file=sys.stderr)
     
     return render_template('registro.html', estudiantes=lista_estudiantes)
 

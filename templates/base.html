@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VELAR // Next-Gen Academic</title>
+    <title>COMPUEDU // Next-Gen Experience</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,21 +11,16 @@
     
     <style>
         :root {
-            --bg-deep: #0b0f19;
-            --bg-card: rgba(20, 32, 54, 0.45);
+            --bg-deep: #05070f;
+            --bg-card: rgba(11, 19, 36, 0.5);
             --neon-cyan: #00f2fe;
             --neon-blue: #4facfe;
             --text-pure: #ffffff;
             --text-silver: #94a3b8;
-            --glass-border: rgba(0, 242, 254, 0.15);
-            --glass-border-active: rgba(0, 242, 254, 0.4);
+            --glass-border: rgba(0, 242, 254, 0.12);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-deep);
@@ -37,162 +32,117 @@
             overflow-x: hidden;
         }
 
-        /* --- SISTEMA PRELOADER --- */
+        /* --- SISTEMA PRELOADER (CORTINA INICIAL ESTILO VIDEO) --- */
         #preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bg-deep);
             z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
         }
 
-        .loader-ring {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(0, 242, 254, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--neon-cyan);
-            border-bottom-color: var(--neon-blue);
-            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        }
-
-        .loader-text {
-            margin-top: 20px;
+        .loader-brand {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 4px;
-            color: var(--neon-cyan);
+            font-size: 1.8rem;
+            letter-spacing: 12px;
             text-transform: uppercase;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        /* --- NAVEGACIÓN FUTURISTA --- */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(11, 15, 25, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
             color: var(--text-pure);
-            text-decoration: none;
-            font-weight: 700;
+            margin-bottom: 20px;
+            animation: pulseReveal 2s ease-in-out infinite;
         }
 
-        .logo span {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
+        .loader-bar {
+            width: 150px; height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative; overflow: hidden;
         }
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 40px;
+        .loader-bar::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-cyan));
+            animation: lineMove 1.5s infinite ease-in-out;
         }
 
-        nav a {
-            color: var(--text-silver);
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: color 0.3s ease;
+        /* --- VIDEO DE FONDO CINEMÁTICO --- */
+        .video-background-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; overflow: hidden;
+            background-color: var(--bg-deep);
         }
 
-        nav a:hover {
-            color: var(--neon-cyan);
+        .video-background-wrapper video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0; /* Empieza invisible y JavaScript lo revela */
+            filter: brightness(0.4) contrast(1.1) saturate(0.9);
+            transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), filter 2s ease;
         }
 
-        .btn-nav-tech {
-            border: 1px solid var(--neon-cyan);
-            padding: 10px 24px;
-            color: var(--neon-cyan);
-            background: rgba(0, 242, 254, 0.03);
-            border-radius: 4px;
-            font-family: 'Space Grotesk', sans-serif;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.05);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Capa esmerilada/patrón encima del video para mantener legibilidad */
+        .video-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(5, 7, 15, 0.6) 0%, rgba(5, 7, 15, 0.9) 100%);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
         }
 
-        .btn-nav-tech:hover {
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
-            color: var(--bg-deep);
-            border-color: transparent;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
-            transform: translateY(-1px);
+        /* --- NAVEGACIÓN TRANSPARENTE MULTICAPA --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 25px 60px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5, 7, 15, 0.4); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            opacity: 0; transform: translateY(-10px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
         }
+
+        .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; text-decoration: none; color: #fff; font-weight: 700; letter-spacing: 3px; }
+        .logo span { color: var(--neon-cyan); }
+
+        nav a { color: var(--text-silver); text-decoration: none; font-size: 0.8rem; margin-left: 35px; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
+        nav a:hover { color: var(--neon-cyan); }
 
         .main-content {
-            margin-top: 85px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 90px; flex: 1; display: flex; flex-direction: column;
+            opacity: 0; transform: translateY(20px); filter: blur(5px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s, filter 1.2s ease 0.5s;
         }
 
-        /* Cuando el loader termina, activa la visualización */
-        body.loaded .main-content {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Disparadores de clase activa controlados por JS */
+        body.loaded header { opacity: 1; transform: translateY(0); }
+        body.loaded .main-content { opacity: 1; transform: translateY(0); filter: blur(0); }
+        body.loaded .video-background-wrapper video { opacity: 1; }
 
-        footer {
-            padding: 30px;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--text-silver);
-            letter-spacing: 2px;
-            border-top: 1px solid var(--glass-border);
-            background: #070a10;
-        }
+        footer { padding: 30px; text-align: center; font-size: 0.7rem; color: var(--text-silver); border-top: 1px solid var(--glass-border); background: rgba(5, 7, 15, 0.8); z-index: 10; }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
+        @keyframes pulseReveal { 0%, 100% { opacity: 0.6; letter-spacing: 12px; } 50% { opacity: 1; letter-spacing: 16px; } }
+        @keyframes lineMove { 0% { left: -40%; } 100% { left: 100%; } }
     </style>
 </head>
 <body>
 
     <div id="preloader">
-        <div class="loader-ring"></div>
-        <div class="loader-text">Sincronizando Sistema</div>
+        <div class="loader-brand">COMPUEDU</div>
+        <div class="loader-bar"></div>
     </div>
+
+    <div class="video-background-wrapper">
+        <video autoplay loop muted playsinline id="bg-video">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-with-infographics-41836-large.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-overlay"></div>
 
     <header>
         <a href="/" class="logo">COMPU<span>EDU</span></a>
         <nav>
             <a href="/">Dashboard</a>
             <a href="/registro">Inscripciones</a>
-            <a href="/registro#seccion-consulta" class="btn-nav-tech">Ver Registros</a>
         </nav>
     </header>
 
@@ -201,16 +151,17 @@
     </div>
 
     <footer>
-        // QUANTUM CORE INTERFACE — COMPUEDU ACADEMIC GRAPH 2026.
+        // INTERFACE ENLACE CINEMÁTICO OPERACIONAL — 2026.
     </footer>
 
     <script>
-        // Lógica de apagado del Preloader al terminar de cargar los recursos activos
         window.addEventListener('load', function() {
-            const preloader = document.getElementById('preloader');
-            preloader.style.opacity = '0';
-            preloader.style.visibility = 'hidden';
-            document.body.classList.add('loaded');
+            setTimeout(function() {
+                const loader = document.getElementById('preloader');
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                document.body.classList.add('loaded');
+            }, 800); // Pequeña latencia intencional para asegurar el renderizado visual continuo
         });
     </script>
 </body>

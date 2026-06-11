@@ -8,57 +8,53 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        padding: 60px 20px;
-        background: radial-gradient(circle at 50% 30%, rgba(0, 242, 254, 0.04) 0%, rgba(11, 15, 25, 0) 70%);
-        min-height: calc(100vh - 150px);
+        padding: 40px 20px;
+        min-height: calc(100vh - 160px);
     }
 
-    .badge-tech {
-        background: rgba(0, 242, 254, 0.08);
+    .glass-reveal-box {
+        background: rgba(11, 19, 36, 0.4);
         border: 1px solid var(--glass-border);
-        color: var(--neon-cyan);
-        padding: 6px 16px;
-        font-size: 0.7rem;
-        font-family: 'Space Grotesk', sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        border-radius: 100px;
-        margin-bottom: 30px;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 50px 70px;
+        border-radius: 8px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        max-width: 850px;
     }
 
     .hero-title {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 4rem;
+        font-size: 3.5rem;
         font-weight: 700;
-        letter-spacing: -1px;
+        letter-spacing: -0.5px;
         line-height: 1.1;
-        max-width: 850px;
-        background: linear-gradient(135deg, var(--text-pure) 30%, var(--text-silver));
+        background: linear-gradient(135deg, #ffffff 40%, var(--neon-cyan));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
     .hero-subtitle {
-        font-size: 1.05rem;
+        font-size: 1rem;
         color: var(--text-silver);
-        max-width: 600px;
         line-height: 1.8;
-        font-weight: 400;
-        margin-bottom: 50px;
+        font-weight: 300;
+        margin-bottom: 40px;
+        letter-spacing: 0.5px;
     }
 
     .btn-group {
         display: flex;
         gap: 20px;
+        justify-content: center;
     }
 
     .btn-cyber {
         padding: 16px 36px;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.8rem;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 2px;
         text-decoration: none;
@@ -66,24 +62,23 @@
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .btn-primary-cyan {
+    .btn-cyan {
         background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
-        color: var(--bg-deep);
-        box-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+        color: #05070f;
+        box-shadow: 0 10px 30px rgba(0, 242, 254, 0.25);
     }
 
-    .btn-primary-cyan:hover {
+    .btn-cyan:hover {
         transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(0, 242, 254, 0.35);
+        box-shadow: 0 15px 35px rgba(0, 242, 254, 0.45);
     }
 
-    .btn-secondary-outline {
+    .btn-outline {
         border: 1px solid var(--glass-border);
-        color: var(--text-pure);
-        background: rgba(255,255,255,0.02);
+        color: #fff;
     }
 
-    .btn-secondary-outline:hover {
+    .btn-outline:hover {
         border-color: var(--neon-cyan);
         color: var(--neon-cyan);
         transform: translateY(-3px);
@@ -91,13 +86,14 @@
 </style>
 
 <div class="hero-container">
-    <div class="badge-tech">v2.0 Sincronizada</div>
-    <h1 class="hero-title">Gestión de Datos Escalable & Fluida</h1>
-    <p class="hero-subtitle">Procesamiento distribuido y visualización asíncrona sobre una arquitectura limpia de baja latencia. Diseñado para control en tiempo real.</p>
-    
-    <div class="btn-group">
-        <a href="/registro" id="nav-registro" class="btn-cyber btn-primary-cyan">Módulo Escritura</a>
-        <a href="/registro#seccion-consulta" id="nav-consulta" class="btn-cyber btn-secondary-outline">Panel Consulta</a>
+    <div class="glass-reveal-box">
+        <h1 class="hero-title">Módulo Académico Inteligente</h1>
+        <p class="hero-subtitle">Transición fluida multi-capa con persistencia asíncrona sobre PostgreSQL. Diseñado para operaciones de baja latencia y alta fidelidad visual.</p>
+        
+        <div class="btn-group">
+            <a href="/registro" id="nav-registro" class="btn-cyber btn-cyan">Módulo Escritura</a>
+            <a href="/registro#seccion-consulta" id="nav-consulta" class="btn-cyber btn-outline">Sección Registros</a>
+        </div>
     </div>
 </div>
 
