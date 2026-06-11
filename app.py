@@ -7,14 +7,14 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 def get_db_connection():
-    # 1. Intentar leer la variable de entorno de Render
     url = os.environ.get('DATABASE_URL')
     
-    # 2. Respaldo explícito con tus credenciales de Render extraídas de DBeaver
     if not url:
-        url = "postgres://public:sena_t4sc@dpg-d8f3fdurnols73am6030-a.oregon-postgres.render.com:5432/sena_t4sc"
+        print("CRÍTICO: La variable DATABASE_URL no está configurada en Render.", file=sys.stderr)
+        # Retorna una excepción clara para identificar la falta de configuración en la plataforma
+        raise ValueError("DATABASE_URL no configurada.")
     
-    # Asegurar el parámetro SSL obligatorio para evitar rechazos de conexión
+    # Garantizar el cifrado SSL requerido por los servidores de Render
     if "sslmode=" not in url:
         if "?" in url:
             url += "&sslmode=require"
@@ -27,7 +27,7 @@ def init_db():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        # Forzar la creación de la tabla con la estructura exacta de tu DBeaver
+        # Mantenemos la tabla con la estructura exacta verificada en tu DBeaver
         cur.execute('''
             CREATE TABLE IF NOT EXISTS estudiantes (
                 id SERIAL PRIMARY KEY,
@@ -62,7 +62,6 @@ def registro():
         try:
             conn = get_db_connection()
             cur = conn.cursor()
-            # Mapeo de variables sanitizadas hacia las columnas reales de la tabla
             cur.execute('''
                 INSERT INTO estudiantes (documento, nombre, correo, programa, ficha)
                 VALUES (%s, %s, %s, %s, %s)
@@ -71,12 +70,10 @@ def registro():
             cur.close()
             conn.close()
         except Exception as e:
-            # Captura errores en los logs de Render (como llaves duplicadas) sin tumbar el servidor
             print(f"Error controlado en inserción SQL: {str(e)}", file=sys.stderr)
             
         return redirect(url_for('registro'))
 
-    # Bloque de lectura para la tabla embebida usando RealDictCursor
     lista_estudiantes = []
     try:
         conn = get_db_connection()
@@ -90,7 +87,11 @@ def registro():
     
     return render_template('registro.html', estudiantes=lista_estudiantes)
 
-init_db()
+# Inicialización segura
+try:
+    init_db()
+except Exception:
+    pass
 
 if __name__ == '__main__':
     app.run(debug=False)
