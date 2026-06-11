@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 def get_db_connection():
     url = os.environ.get('DATABASE_URL')
-    # Nos aseguramos de inyectar el modo SSL requerido por Render si no está presente
     if url and "sslmode=" not in url:
         if "?" in url:
             url += "&sslmode=require"
@@ -20,6 +19,7 @@ def init_db():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+        # Aseguramos que use la tabla 'estudiantes' que ya tienes creada en DBeaver
         cur.execute('''
             CREATE TABLE IF NOT EXISTS estudiantes (
                 id SERIAL PRIMARY KEY,
@@ -34,9 +34,9 @@ def init_db():
         conn.commit()
         cur.close()
         conn.close()
-        print("Base de datos estructurada e inicializada con psycopg2.")
+        print("Base de datos verificada e inicializada correctamente.")
     except Exception as e:
-        print(f"Error base de datos: {str(e)}", file=sys.stderr)
+        print(f"Error en init_db: {str(e)}", file=sys.stderr)
 
 @app.route('/')
 def index():
@@ -54,6 +54,7 @@ def registro():
         try:
             conn = get_db_connection()
             cur = conn.cursor()
+            # Inserción apuntando exclusivamente a la tabla 'estudiantes'
             cur.execute('''
                 INSERT INTO estudiantes (documento, nombre, correo, programa, ficha)
                 VALUES (%s, %s, %s, %s, %s)
@@ -61,18 +62,24 @@ def registro():
             conn.commit()
             cur.close()
             conn.close()
+        except psycopg2.errors.UniqueViolation:
+            print("Aviso: El documento o correo ya existe en el sistema.", file=sys.stderr)
         except Exception as e:
-            print(f"Error inserción: {str(e)}", file=sys.stderr)
+            print(f"Error en inserción SQL: {str(e)}", file=sys.stderr)
             
         return redirect(url_for('registro'))
 
-    # Lectura limpia usando RealDictCursor para la consulta embebida (Requisito c)
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
-    cur.execute('SELECT documento, nombre, correo, programa, ficha FROM estudiantes ORDER BY id DESC;')
-    lista_estudiantes = cur.fetchall()
-    cur.close()
-    conn.close()
+    # Consulta limpia usando RealDictCursor para alimentar la tabla embebida sin errores
+    lista_estudiantes = []
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute('SELECT documento, nombre, correo, programa, ficha FROM estudiantes ORDER BY id DESC;')
+        lista_estudiantes = cur.fetchall()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error en consulta SQL: {str(e)}", file=sys.stderr)
     
     return render_template('registro.html', estudiantes=lista_estudiantes)
 
